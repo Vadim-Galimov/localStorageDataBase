@@ -51,7 +51,7 @@ const dbTableManager = {
           columnButtons: [],
           headers: ["база данных"],
           items: dbList,
-          input: ["", [["Add db", createDb]]],
+          input: {value:"", buttons:[{buttonText: "Add db", buttonFunction: createDb}]},
           itemTag: "span",
           tableKey: "table list",
           divButtons: [],
@@ -121,20 +121,27 @@ const dbTableManager = {
           ],
           headers: [],
           items: items,
-          input: [key, [["change table name", changeTableTitle]]],
+          input: {value:key, buttons:[{buttonText: "change table name", buttonFunction: changeTableTitle}]},
           itemTag: "textarea",
           tableKey: key,
           divButtons: [
-            ["save table", saveTable],
-            ["add column", addColumn],
-            ["add row", addRow],
+            {buttonText: "save table", buttonFunction: saveTable},
+            {buttonText: "add column", buttonFunction: addColumn},
+            {buttonText: "add row", buttonFunction: addRow},
           ],
         });
 
         list.createEditor();
 
         function changeTableTitle(key) {
-          console.log(11, key);
+          list.tableKey = key;
+
+          saveTable();
+
+
+
+
+
         }
         function addRow() {
           let length = list.items[0].length;
@@ -170,8 +177,9 @@ const dbTableManager = {
             });
             arr.push(miniArr);
           });
+          console.log(222, list)
 
-          localStorage.setItem(key, JSON.stringify(arr));
+          localStorage.setItem(list.tableKey, JSON.stringify(arr));
           dbTableManager.windows.tableList.open();
         }
 

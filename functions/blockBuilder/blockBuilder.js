@@ -88,7 +88,7 @@ const blockBuilder = {
       buttons.forEach((button, index) => {
         buttonId = randomizer.createUniqueId("buttonId");
         buttons[index].push(buttonId);
-        buttonsHTML += `<button id="${buttonId}">${button[0]}</button>`;
+        buttonsHTML += `<button id="${buttonId}">${button.buttonText}</button>`;
       });
 
       innerHTML =
@@ -100,11 +100,11 @@ const blockBuilder = {
 
       place.append(div);
       buttons.forEach((button) => {
-        console.log(22, button[1], document.getElementById(button[2]), func1);
+
         document.getElementById(button[2]).addEventListener("click", func1);
 
         function func1() {
-          button[1](document.getElementById(inputId).value);
+          button.buttonFunction(document.getElementById(inputId).value);
         }
       });
     },
@@ -175,14 +175,17 @@ class HTMLTable {
     this.headers = table.headers;
     this.items = table.items;
     let element = document.createElement("div");
-    table.tablePlace.append(element);
+  
     this.div = element;
     this.#innerMethods.tableObject = this;
     this.input = table.input;
-    [this.inputValue, this.inputButtons] = table.input;
+    this.inputValue = table.input.value;
+    this.inputButtons = table.input.buttons;
+
     this.itemTag = table.itemTag;
     this.tableKey = table.tableKey;
     this.divButtons = table.divButtons;
+    table.tablePlace.append(element);
   }
   createTable() {
     this.#innerMethods.addInputText();
@@ -269,15 +272,15 @@ class HTMLTable {
     addInputText() {
       let div = document.createElement("div");
 
-      let buttonsHTML = this.tableObject.inputButtons.reduce(
+      let buttonsHTML = this.tableObject.input.buttons.reduce(
         (buttonsHTML, button) => {
-          return buttonsHTML + `<button>${button[0]}</button>`;
+          return buttonsHTML + `<button>${button.buttonText}</button>`;
         },
         ""
       );
 
       let innerHTML =
-        `<input type="text" value='${this.tableObject.inputValue}'>` +
+        `<input type="text" value='${this.tableObject.input.value}'>` +
         buttonsHTML;
 
       div.innerHTML = innerHTML;
@@ -286,9 +289,9 @@ class HTMLTable {
 
       let buttons = [...div.querySelectorAll("button")];
 
-      this.tableObject.inputButtons.forEach((button, index) => {
+      this.tableObject.input.buttons.forEach((button, index) => {
         buttons[index].addEventListener("click", function () {
-          button[1](div.querySelector("input").value);
+          button.buttonFunction(div.querySelector("input").value);
         });
       });
     },
@@ -297,7 +300,7 @@ class HTMLTable {
 
       let buttonsHTML = this.tableObject.divButtons.reduce(
         (buttonsHTML, button) => {
-          return buttonsHTML + `<button>${button[0]}</button>`;
+          return buttonsHTML + `<button>${button.buttonText}</button>`;
         },
         ""
       );
@@ -309,7 +312,7 @@ class HTMLTable {
       let buttons = [...div.querySelectorAll("button")];
 
       this.tableObject.divButtons.forEach((button, index) => {
-        buttons[index].addEventListener("click", button[1]);
+        buttons[index].addEventListener("click", button.buttonFunction);
       });
     },
     addColumnButtons() {
