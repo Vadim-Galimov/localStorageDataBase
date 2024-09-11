@@ -15,8 +15,35 @@ const localStorageDataBase = {
       localStorage.removeItem(tableName);
     },
     getTable(tableName) {
-      string = localStorage.getItem(tableName);
-      return string;
+  
+      data = localStorage.getItem(tableName);
+      let items;
+
+    
+
+      if (isJsonString(data)) {
+        items = JSON.parse(data);
+      } else {
+        items = [[data]];
+      }
+
+      if (items.length == 0) items.push([""]);
+
+
+
+      return items;
+
+      function isJsonString(str) {
+        try {
+          JSON.parse(str);
+        } catch (e) {
+          return false;
+        }
+        return true;
+      }
+
+
+
     },
   },
 };

@@ -1,195 +1,28 @@
-const blockBuilder = {
-  tables: {
-    tableForEdit(key, dBBody) {
-      blockBuilder.internalMethods.createTableWithButtonsFromDB(
-        dBBody,
-        [],
-        [],
-        [],
-        document.querySelector(`#${dbTableManager.interface.id} .workSpace`)
-      );
 
-      result1 = "";
-      try {
-        dBBody.forEach((tr, index) => {
-          console.log("index", index);
-          if (index == 0) {
-            tr1 = "<thead><tr>";
-            tr.forEach((td) => {
-              tr1 += `<th><textarea>${td}</textarea></th>`;
-            });
-            tr1 += "</tr></thead><tbody>";
-          } else {
-            tr1 = "<tr>";
-            tr.forEach((td) => {
-              tr1 += `<td><textarea>${td}</textarea></td>`;
-            });
-            tr1 += "</tr>";
-          }
-          result1 += tr1;
-        });
-
-        result1 += "</tbody>";
-      } catch (err) {
-        result1 += `<table id="dbTable"><tr><td><textarea>${dBBody}</textarea></td></tr></table>`;
-      }
-
-      blockBuilder.internalMethods.addElement(
-        document.querySelector("#dbTableManager .workSpace"),
-        "div",
-        result1
-      );
-
-      function addRow() {
-        length = [
-          ...document.getElementById("dbTable").getElementsByTagName("tr"),
-        ][0].childNodes.length;
-
-        tds = "";
-
-        for (i = 0; i < length; i++) {
-          tds += "<td><textarea>space</textarea></td>";
-        }
-
-        tr = document.createElement("tr");
-        tr.innerHTML = tds;
-
-        [
-          ...document.getElementById("dbTable").getElementsByTagName("tbody"),
-        ][0].append(tr);
-      }
-
-      function addColumn() {
-        rows = [
-          ...document.getElementById("dbTable").getElementsByTagName("tr"),
-        ];
-        rows.forEach((row) => {
-          td = document.createElement("td");
-          td.innerHTML = "<textarea>space</textarea>";
-
-          row.append(td);
-        });
-      }
-
-      length = mathColumns();
-      result = "<table><tr>";
-      for (i = 0; i < length; i++) {
-        result += `<td><button id="deleteColumn${i}">delete column${i}</button></td>`;
-      }
-      result += "</tr></table>";
-    },
-  },
-  inputs: {
-    inputText(place, value, buttons) {
-      inputId = randomizer.createUniqueId("inputId");
-
-      buttonsHTML = "";
-
-      buttons.forEach((button, index) => {
-        buttonId = randomizer.createUniqueId("buttonId");
-        buttons[index].push(buttonId);
-        buttonsHTML += `<button id="${buttonId}">${button.buttonText}</button>`;
-      });
-
-      innerHTML =
-        `<input type="text" id='${inputId}' value='${value}'>` + buttonsHTML;
-
-      div = document.createElement("div");
-
-      div.innerHTML = innerHTML;
-
-      place.append(div);
-      buttons.forEach((button) => {
-
-        document.getElementById(button[2]).addEventListener("click", func1);
-
-        function func1() {
-          button.buttonFunction(document.getElementById(inputId).value);
-        }
-      });
-    },
-  },
-  internalMethods: {
-    createTableWithButtonsFromDB(
-      items,
-      ths,
-      columnButtons = [],
-      buttons,
-      tablePlace
-    ) {
-      console.log(333, items);
-      let div = document.createElement("div");
-      let table = "<table>";
-      let tHead = "";
-      ths.forEach((th) => {
-        columnButtons.forEach((button) => {
-          thead += `<button>test</button>`;
-        });
-
-        tHead += `<th>${th}</th>`;
-      });
-      table += `<tr>${tHead}</tr>`;
-      items.forEach((item, index) => {
-        tr = "";
-        item.forEach((td) => {
-          tr += `<td id='dbId${index}'>${td}</td>`;
-        });
-
-        buttonsHTML = "";
-
-        buttons.forEach((button) => {
-          buttonsHTML += `<button data-row= '${index}' >${button.buttonText}</button>`;
-        });
-
-        table +=
-          `<tr data-row= '${index}'>` +
-          tr +
-          "<td>" +
-          buttonsHTML +
-          "</td></tr>";
-      });
-      table += "</table>";
-      div.innerHTML = table;
-
-      tablePlace.append(div);
-
-      buttons.forEach((button) => {
-        [...document.getElementsByClassName()].forEach((item) => {
-          item.addEventListener("click", button.buttonFunction, this);
-        });
-      });
-    },
-    addElement(parent, tag, innerHTML) {
-      element = document.createElement(tag);
-      element.innerHTML = innerHTML;
-      parent.append(element);
-    },
-  },
-};
 
 class HTMLTable {
   constructor(table) {
     this.tablePlace = table.tablePlace;
-    this.rowButtons = table.rowButtons;
-    this.columnButtons = table.columnButtons;
+    this.tableKey = table.tableKey;
+
     this.headers = table.headers;
     this.items = table.items;
-    let element = document.createElement("div");
-  
-    this.div = element;
-    this.#innerMethods.tableObject = this;
-    this.input = table.input;
-    this.inputValue = table.input.value;
-    this.inputButtons = table.input.buttons;
-
     this.itemTag = table.itemTag;
-    this.tableKey = table.tableKey;
+
+    this.rowButtons = table.rowButtons;
+    this.columnButtons = table.columnButtons;
     this.divButtons = table.divButtons;
+   
+    this.input = table.input;
+
+    let element = document.createElement("div");
     table.tablePlace.append(element);
+    this.div = element;
+
+    this.#innerMethods.tableObject = this;
   }
   createTable() {
     this.#innerMethods.addInputText();
-
     this.#innerMethods.createMainTable();
     this.#innerMethods.addRowButtons();
     this.#innerMethods.addColumnHeaders();
@@ -197,7 +30,6 @@ class HTMLTable {
   createEditor() {
     this.#innerMethods.addDivButtons();
     this.#innerMethods.addInputText();
-
     this.#innerMethods.createMainTable();
     this.#innerMethods.addRowButtons();
     this.#innerMethods.addColumnButtons();
@@ -205,6 +37,7 @@ class HTMLTable {
 
   #innerMethods = {
     createMainTable() {
+
       const table = document.createElement("table");
       table.setAttribute("data-table-key", this.tableObject.tableKey);
 
@@ -269,6 +102,7 @@ class HTMLTable {
       newDiv.setAttribute("data-row-type", "header");
       this.tableObject.div.querySelector("tbody").prepend(newDiv);
     },
+
     addInputText() {
       let div = document.createElement("div");
 
@@ -295,6 +129,7 @@ class HTMLTable {
         });
       });
     },
+
     addDivButtons() {
       let div = document.createElement("div");
 
@@ -315,6 +150,7 @@ class HTMLTable {
         buttons[index].addEventListener("click", button.buttonFunction);
       });
     },
+    
     addColumnButtons() {
       if (!this.tableObject.div.querySelector("th")) {
         let length = list.items[0].length;
@@ -362,4 +198,11 @@ class HTMLTable {
       });
     },
   };
+}
+
+
+function addElement(parent, tag, innerHTML) {
+  element = document.createElement(tag);
+  element.innerHTML = innerHTML;
+  parent.append(element);
 }
