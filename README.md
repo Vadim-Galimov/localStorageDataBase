@@ -28,10 +28,11 @@
 
 ## Запуск
 
-document.addEventListener("DOMContentLoaded", dbTableManager.openTableList);
+document.addEventListener("DOMContentLoaded", () => {
+  let dbTableManager = new localStorageDataBase( document.querySelector(`#workspace`));
+  dbTableManager.openTableList()});
 
-
-### вводимые данные
+document.querySelector(`#workspace`) - див, в который будет выводиться программа
 
 
 
@@ -40,11 +41,11 @@ document.addEventListener("DOMContentLoaded", dbTableManager.openTableList);
 
 ### окна
 
-#### список баз данных
+- список баз данных
 
 Список баз данных, с возможностью удалить базу данных, открыть её, или добавить новую
 
-##### Добавить базу данных
+- Добавить базу данных
 
 Поле куда будет вводиться и кнопка добавления
 
