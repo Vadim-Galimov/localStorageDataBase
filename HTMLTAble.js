@@ -259,7 +259,7 @@ class HTMLTable {
       let ths = [
         ...this.tableObject.div.querySelectorAll("tr[data-row-type=header] th"),
       ];
-      console.log(321, ths);
+ 
       ths.forEach((th) => {
         this.tableObject.columnButtons.forEach((button, index) => {
           let buttons = [...th.querySelectorAll("button")];

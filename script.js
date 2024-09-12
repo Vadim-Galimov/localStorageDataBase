@@ -1,11 +1,12 @@
 
 
 
-class TableManager  {
+class localStorageDataBase  {
 
-  constructor(tableName, workspace) {
-    this.tableName = tableName;
+  constructor( workspace) {
+
     this.workspace = workspace;
+ 
   }
 
 
@@ -17,37 +18,41 @@ class TableManager  {
     openTableList() { 
 
 
-
   
       this.workspace.innerHTML = '';
-      let dbTableManager = this
- 
-
-        let dbList = localStorageDataBase.commands.getDataBaseItemList();
 
 
+        let dbList = this.getDataBaseItemList();
 
-         let createDb = function(dbName) {
-          localStorageDataBase.commands.addTable(dbName);
-          dbTableManager.openTableList();
+
+
+         function createDbFunc(dbName) {
+          this.addTable(dbName);
+
+          this.openTableList();
         }
       
-        let open = function(event) {
+        function openFunc(event) {
+
           
           let key = list.buttonMethods.getRowKey(event);
-          dbTableManager.openTableEditor(key);
+          this.openTableEditor(key);
         }
-        let deleteRow = function(event) {
+
+
+        let deleteRowFunc = function(event) {
          let key = list.buttonMethods.getRowKey(event);
       
-         localStorageDataBase.commands.deleteTable(key);
-          dbTableManager.openTableList();
+         localStorage.removeItem(key);
+         this.openTableList();
         }
       
-
+        let open = openFunc.bind(this);
+        let createDb = createDbFunc.bind(this);
+        let deleteRow = deleteRowFunc.bind(this);
         
         let list = new HTMLTable({
-          tablePlace: dbTableManager.workspace,
+          tablePlace: this.workspace,
           rowButtons: [
             {
               buttonText: "open",
@@ -72,16 +77,22 @@ class TableManager  {
   
     }
     openTableEditor(key) {
-      let dbTableManager = this
+
+  
     
-        dbTableManager.workspace.innerHTML = '';
+      this.workspace.innerHTML = '';
 
-        let items = localStorageDataBase.commands.getTable(key)
+        let items = this.getTable(key)
 
-
+        let deleteRow = deleteRowFunc.bind(this);
+        let deleteColumn = deleteColumnFunc.bind(this);
+        let changeTableTitle = changeTableTitleFunc.bind(this);
+        let saveTable = saveTableFunc.bind(this);
+        let addColumn = addColumnFunc.bind(this);
+        let addRow = addRowFunc.bind(this);
 
         let list = new HTMLTable({
-          tablePlace: dbTableManager.workspace,
+          tablePlace: this.workspace,
           rowButtons: [
             {
               buttonText: "delete row",
@@ -105,67 +116,119 @@ class TableManager  {
 
         list.createEditor();
 
-        function changeTableTitle(key) {
+
+
+
+        function changeTableTitleFunc(key) {
           localStorage.removeItem(list.tableKey);
 
           list.tableKey = key;
 
           localStorage.setItem(list.tableKey, JSON.stringify(items));
 
-          dbTableManager.openTableEditor(list.tableKey);
+          this.openTableEditor(list.tableKey);
 
 
 
         }
 
-        function saveTable() {
+        function saveTableFunc() {
  
   
     
           items = list.buttonMethods.getTableAfterEdit();
           localStorage.setItem(list.tableKey, JSON.stringify(items));
 
-          dbTableManager.openTableEditor(list.tableKey);
+          this.openTableEditor(list.tableKey);
 
 
         }
 
-       function addRow() {
+       function addRowFunc() {
         
           items = list.buttonMethods.getTableAfterAddRow();
           localStorage.setItem(key, JSON.stringify(items));
-          dbTableManager.openTableEditor(key);
+          this.openTableEditor(key);
         }
 
-        function addColumn() {
+        function addColumnFunc() {
    
           items = list.buttonMethods.getTableAfterAddColumn();
           
           localStorage.setItem(key, JSON.stringify(items));
-          dbTableManager.openTableEditor(key);
+          this.openTableEditor(key);
         }
 
 
 
 
-        function deleteRow(event) {
+        function deleteRowFunc(event) {
  
 
          let items = list.buttonMethods.getTableAfterDeleteRow();
 
           localStorage.setItem(key, JSON.stringify(items));
-          dbTableManager.openTableEditor(key);
+          this.openTableEditor(key);
         }
 
-        function deleteColumn(event) {
+        function deleteColumnFunc(event) {
 
          let items = list.buttonMethods.getTableAfterDeleteColumn();
           localStorage.setItem(key, JSON.stringify(items));
-          dbTableManager.openTableEditor(key);
+          this.openTableEditor(key);
         }
 
 
 
+    }
+
+
+    getDataBaseItemList() {
+      const dBList = [];
+      for (let i = 0; i < localStorage.length; i++) {
+        dBList.push([localStorage.key(i)]);
+      }
+
+      return dBList;
+    }
+
+
+    getTable(tableName) {
+  
+      let data = localStorage.getItem(tableName);
+      let items;
+
+    
+
+      if (isJsonString(data)) {
+        items = JSON.parse(data);
+      } else {
+        items = [[data]];
+      }
+
+      console.log(2444444, items, data, tableName)
+      if (items.length == 0) items.push([""]);
+
+
+
+      return items;
+
+      function isJsonString(str) {
+        try {
+          JSON.parse(str);
+        } catch (e) {
+          return false;
+        }
+        return true;
+      }
+
+
+
+    }
+
+
+    addTable(tableName) {
+      localStorage.setItem(tableName, [[""]]);
     }
   
 };
@@ -175,5 +238,5 @@ class TableManager  {
 
 
 document.addEventListener("DOMContentLoaded", () => {
-  let dbTableManager = new TableManager("dbTableManager", document.querySelector(`#workspace`));
+  let dbTableManager = new localStorageDataBase( document.querySelector(`#workspace`));
   dbTableManager.openTableList()});
