@@ -63,7 +63,7 @@ class HTMLTable {
 
       let arr = [];
       let rows = [
-        ...dbTableManager.workspace.querySelectorAll(
+        ...this.tableObject.div.querySelectorAll(
           `tr[data-row-type="item"]`
         ),
       ];

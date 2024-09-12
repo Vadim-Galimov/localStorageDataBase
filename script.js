@@ -3,10 +3,10 @@
 
 class TableManager  {
 
-
-  
-
-
+  constructor(tableName, workspace) {
+    this.tableName = tableName;
+    this.workspace = workspace;
+  }
 
 
 
@@ -16,14 +16,36 @@ class TableManager  {
 
     openTableList() { 
 
-      dbTableManager.workspace =document.querySelector(`#workspace`);
+
 
   
-      dbTableManager.workspace.innerHTML = '';
+      this.workspace.innerHTML = '';
+      let dbTableManager = this
  
 
         let dbList = localStorageDataBase.commands.getDataBaseItemList();
 
+
+
+         let createDb = function(dbName) {
+          localStorageDataBase.commands.addTable(dbName);
+          dbTableManager.openTableList();
+        }
+      
+        let open = function(event) {
+          
+          let key = list.buttonMethods.getRowKey(event);
+          dbTableManager.openTableEditor(key);
+        }
+        let deleteRow = function(event) {
+         let key = list.buttonMethods.getRowKey(event);
+      
+         localStorageDataBase.commands.deleteTable(key);
+          dbTableManager.openTableList();
+        }
+      
+
+        
         let list = new HTMLTable({
           tablePlace: dbTableManager.workspace,
           rowButtons: [
@@ -47,28 +69,10 @@ class TableManager  {
 
         list.createTable();
 
-
-        function createDb(dbName) {
-          localStorageDataBase.commands.addTable(dbName);
-          dbTableManager.openTableList();
-        }
-      
-        function open(event) {
-          
-          let key = list.buttonMethods.getRowKey(event);
-          dbTableManager.openTableEditor(key);
-        }
-        function deleteRow(event) {
-         let key = list.buttonMethods.getRowKey(event);
-      
-         localStorageDataBase.commands.deleteTable(key);
-          dbTableManager.openTableList();
-        }
-      
-
   
     }
     openTableEditor(key) {
+      let dbTableManager = this
     
         dbTableManager.workspace.innerHTML = '';
 
@@ -166,8 +170,10 @@ class TableManager  {
   
 };
 
-let dbTableManager = new TableManager();
 
 
 
-document.addEventListener("DOMContentLoaded", dbTableManager.openTableList);
+
+document.addEventListener("DOMContentLoaded", () => {
+  let dbTableManager = new TableManager("dbTableManager", document.querySelector(`#workspace`));
+  dbTableManager.openTableList()});
