@@ -1,8 +1,22 @@
+
+
+
+
 const dbTableManager = {
 
 
+  
+
+
+
+
+
+
+
+
+
     openTableList() { 
-      
+
       dbTableManager.workspace =document.querySelector(`#workspace`);
 
   
@@ -34,22 +48,25 @@ const dbTableManager = {
 
         list.createTable();
 
+
         function createDb(dbName) {
           localStorageDataBase.commands.addTable(dbName);
           dbTableManager.openTableList();
         }
-
+      
         function open(event) {
-          let key =
-            event.target.parentNode.parentNode.getAttribute("data-row-key");
+          
+          let key = list.buttonMethods.getRowKey(event);
           dbTableManager.openTableEditor(key);
         }
         function deleteRow(event) {
-         let key = event.target.parentNode.parentNode.getAttribute("data-row-key");
-
+         let key = list.buttonMethods.getRowKey(event);
+      
          localStorageDataBase.commands.deleteTable(key);
           dbTableManager.openTableList();
         }
+      
+
   
     },
     openTableEditor(key) {
@@ -92,65 +109,48 @@ const dbTableManager = {
 
         }
 
-
-
-        function addRow() {
-          let length = list.items[0].length;
-          let newArr = [];
-          for (let i = 0; i < length; i++) newArr.push("");
-          list.items.push(newArr);
-          localStorage.setItem(key, JSON.stringify(list.items));
-          dbTableManager.openTableEditor(key);
-        }
-        function addColumn() {
-          list.items.map((item) => {
-            item.push("");
-          });
-          localStorage.setItem(key, JSON.stringify(list.items));
-          dbTableManager.openTableEditor(key);
-        }
-
         function saveTable() {
-          let arr = [];
-          let rows = [
-            ...dbTableManager.workspace.querySelectorAll(
-              `tr[data-row-type="item"]`
-            ),
-          ];
-          rows.forEach((tr) => {
-            let miniArr = [];
+ 
+  
+ 
+          items = list.buttonMethods.getTableAfterEdit();
+          localStorage.setItem(list.tableKey, JSON.stringify(items));
+          dbTableManager.openTableEditor(key);
 
-            tds = [...tr.querySelectorAll("td")];
-            tds.forEach((td) => {
-              miniArr.push(td.firstChild.value);
-            });
-            arr.push(miniArr);
-          });
-    
 
-          localStorage.setItem(list.tableKey, JSON.stringify(arr));
-          dbTableManager.openTableList();
         }
+
+       function addRow() {
+        
+          items = list.buttonMethods.getTableAfterAddRow();
+          localStorage.setItem(key, JSON.stringify(items));
+          dbTableManager.openTableEditor(key);
+        }
+
+        function addColumn() {
+   
+          items = list.buttonMethods.getTableAfterAddColumn();
+          
+          localStorage.setItem(key, JSON.stringify(items));
+          dbTableManager.openTableEditor(key);
+        }
+
+
+
 
         function deleteRow(event) {
-          let index =
-            event.target.parentNode.parentNode.getAttribute("data-row-index");
-          list.items.splice(index, 1);
+ 
 
+         let items = list.buttonMethods.getTableAfterDeleteRow();
 
-
-          localStorage.setItem(key, JSON.stringify(list.items));
+          localStorage.setItem(key, JSON.stringify(items));
           dbTableManager.openTableEditor(key);
         }
 
         function deleteColumn(event) {
-   
-          let index =
-            event.target.parentNode.getAttribute("data-column-number");
-          list.items.forEach((item) => {
-            item.splice(index, 1);
-          });
-          localStorage.setItem(key, JSON.stringify(list.items));
+
+         let items = list.buttonMethods.getTableAfterDeleteColumn();
+          localStorage.setItem(key, JSON.stringify(items));
           dbTableManager.openTableEditor(key);
         }
 

@@ -34,6 +34,75 @@ class HTMLTable {
     this.#innerMethods.addRowButtons();
     this.#innerMethods.addColumnButtons();
   }
+  buttonMethods = {
+    getRowKey(event) {
+      return  event.target.parentNode.parentNode.getAttribute("data-row-key");
+    },
+    getTableAfterAddRow() {
+
+      let length = list.items[0].length;
+      let newArr = [];
+      for (let i = 0; i < length; i++) newArr.push("");
+      list.items.push(newArr);
+
+      return list.items;
+    },
+
+    getTableAfterAddColumn() {
+
+      list.items.map((item) => {
+        item.push("");
+      });
+
+      return list.items;
+    },
+
+    
+    getTableAfterEdit() {
+
+      let arr = [];
+      let rows = [
+        ...dbTableManager.workspace.querySelectorAll(
+          `tr[data-row-type="item"]`
+        ),
+      ];
+      rows.forEach((tr) => {
+        let miniArr = [];
+  
+        let tds = [...tr.querySelectorAll("td")];
+        tds.forEach((td) => {
+          miniArr.push(td.firstChild.value);
+        });
+        arr.push(miniArr);
+      });
+      return arr;
+  
+    },
+
+    getTableAfterDeleteRow() {
+
+      let index =
+      event.target.parentNode.parentNode.getAttribute("data-row-index");
+    list.items.splice(index, 1);
+
+      return list.items;
+    },
+
+    getTableAfterDeleteColumn() {
+
+      let index =
+      event.target.parentNode.getAttribute("data-column-number");
+    list.items.forEach((item) => {
+      item.splice(index, 1);
+    });
+
+
+      return list.items;
+    },
+
+
+  }
+
 
   #innerMethods = {
     createMainTable() {
@@ -198,6 +267,9 @@ class HTMLTable {
       });
     },
   };
+  
+
+
 }
 
 
