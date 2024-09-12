@@ -26,7 +26,7 @@
 
 -переименовать бд
 
-## Запуск
+2. Запуск
 
 document.addEventListener("DOMContentLoaded", () => {
   let dbTableManager = new localStorageDataBase( document.querySelector(`#workspace`));
@@ -36,7 +36,7 @@ document.querySelector(`#workspace`) - див, в который будет вы
 
 
 
-## Интерфейс
+3. Интерфейс
 
 
 ### окна
