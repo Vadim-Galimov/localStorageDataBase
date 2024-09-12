@@ -27,6 +27,7 @@ const localStorageDataBase = {
         items = [[data]];
       }
 
+      console.log(2444444, items, data, tableName)
       if (items.length == 0) items.push([""]);
 
 

@@ -20,6 +20,7 @@ class HTMLTable {
     this.div = element;
 
     this.#innerMethods.tableObject = this;
+    this.buttonMethods.tableObject = this;
   }
   createTable() {
     this.#innerMethods.addInputText();
@@ -40,21 +41,21 @@ class HTMLTable {
     },
     getTableAfterAddRow() {
 
-      let length = list.items[0].length;
+      let length = this.tableObject.items[0].length;
       let newArr = [];
       for (let i = 0; i < length; i++) newArr.push("");
-      list.items.push(newArr);
+      this.tableObject.items.push(newArr);
 
-      return list.items;
+      return this.tableObject.items;
     },
 
     getTableAfterAddColumn() {
 
-      list.items.map((item) => {
+      this.tableObject.items.map((item) => {
         item.push("");
       });
 
-      return list.items;
+      return this.tableObject.items;
     },
 
     
@@ -83,21 +84,21 @@ class HTMLTable {
 
       let index =
       event.target.parentNode.parentNode.getAttribute("data-row-index");
-    list.items.splice(index, 1);
+      this.tableObject.items.splice(index, 1);
 
-      return list.items;
+      return this.tableObject.items;
     },
 
     getTableAfterDeleteColumn() {
 
       let index =
       event.target.parentNode.getAttribute("data-column-number");
-    list.items.forEach((item) => {
+      this.tableObject.items.forEach((item) => {
       item.splice(index, 1);
     });
 
 
-      return list.items;
+      return this.tableObject.items;
     },
 
 
@@ -222,7 +223,7 @@ class HTMLTable {
     
     addColumnButtons() {
       if (!this.tableObject.div.querySelector("th")) {
-        let length = list.items[0].length;
+        let length = this.tableObject.items[0].length;
         let result = "";
         for (let i = 0; i < length; i++) {
           result += `<th></th>`;

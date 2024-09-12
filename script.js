@@ -1,8 +1,7 @@
 
 
 
-
-const dbTableManager = {
+class TableManager  {
 
 
   
@@ -23,9 +22,9 @@ const dbTableManager = {
       dbTableManager.workspace.innerHTML = '';
  
 
-        dbList = localStorageDataBase.commands.getDataBaseItemList();
+        let dbList = localStorageDataBase.commands.getDataBaseItemList();
 
-        list = new HTMLTable({
+        let list = new HTMLTable({
           tablePlace: dbTableManager.workspace,
           rowButtons: [
             {
@@ -68,7 +67,7 @@ const dbTableManager = {
       
 
   
-    },
+    }
     openTableEditor(key) {
     
         dbTableManager.workspace.innerHTML = '';
@@ -77,7 +76,7 @@ const dbTableManager = {
 
 
 
-        list = new HTMLTable({
+        let list = new HTMLTable({
           tablePlace: dbTableManager.workspace,
           rowButtons: [
             {
@@ -103,19 +102,26 @@ const dbTableManager = {
         list.createEditor();
 
         function changeTableTitle(key) {
+          localStorage.removeItem(list.tableKey);
+
           list.tableKey = key;
 
-          saveTable()
+          localStorage.setItem(list.tableKey, JSON.stringify(items));
+
+          dbTableManager.openTableEditor(list.tableKey);
+
+
 
         }
 
         function saveTable() {
  
   
- 
+    
           items = list.buttonMethods.getTableAfterEdit();
           localStorage.setItem(list.tableKey, JSON.stringify(items));
-          dbTableManager.openTableEditor(key);
+
+          dbTableManager.openTableEditor(list.tableKey);
 
 
         }
@@ -156,9 +162,11 @@ const dbTableManager = {
 
 
 
-    },
+    }
   
 };
+
+let dbTableManager = new TableManager();
 
 
 
